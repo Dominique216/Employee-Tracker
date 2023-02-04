@@ -1,0 +1,26 @@
+{
+  "name": "uta-bootcamp-challenge12",
+  "version": "1.0.0",
+  "description": "This is challenge 12 for the UT Austin coding bootcamp.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Dominique216/UTA-bootcamp-challenge12.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Dominique216/UTA-bootcamp-challenge12/issues"
+  },
+  "homepage": "https://github.com/Dominique216/UTA-bootcamp-challenge12#readme",
+  "dependencies": {
+    "console.table": "^0.10.0",
+    "dotenv": "^16.0.3",
+    "inquirer": "^8.2.4",
+    "mysql2": "^3.1.0"
+  }
+}
