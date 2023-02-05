@@ -1,14 +1,8 @@
 const inquirer = require('inquirer');
-// const db = require('./config/connection');
+const mysql = require('mysql2');
+const db = require('./config/connection');
+const cTable = require('console.table');
 
-// need function for main question (use inquierer to ask qestion, then depending on data go to next functino for next set of questions)
-// run this functino in an inint funciton at the end of the program
-
-// Shoudl have a function for each main question that hadles dq quieries and asks additon questions needed
-
-// Should have seperate functions for add and update employees/roles. 
-
-// Askes the inital question and will go to the next function depending on answer
 options = () => {
     inquirer
         .prompt([
@@ -36,12 +30,20 @@ nextQuesitonSet = (data) => {
 
 // TODO: DEFINE ALL DEPARTMENTS DB QURERY
 allDepartments = () => {
-
+    db.query(`SELECT id, name AS department FROM department;`, (err, results) => {
+        err ? console.log(err) : console.table(results)
+        options()
+    })
+    
 }
 
 // TODO: DEFINE ALL ROLES DB QUERY
 allRoles = () => {
-
+    db.query(`SELECT role.title,role.id, name AS department, role.salary FROM department
+    JOIN role ON department_id = department.id;`, (err, results) => {
+        err ? console.log(err) : console.table(results)
+        options()
+    })
 }
 
 // TODO: DEFINE ALL EMPLOYEES DB QUERY
@@ -51,13 +53,59 @@ allEmployees = () => {
 
 // TODO: ADD DEPARTMENT FUNCTION
 addDepartment = () => {
-
+    inquirer
+        .prompt([
+            {
+                type: 'input', 
+                name: 'newDepartment',
+                message: 'What is the new department name?'
+            }
+        ])
+        .then((data) => {
+           db.query(`INSERT INTO department (name)
+    VALUE (?)`, data.newDepartment, (err, results) => {
+        err ? console.log(err) : console.log(`Added ${data.newDepartment} to the database!`)
+        options()
+    }) 
+        })
+    
 }
 
 // TODO: ADD ROLE FUNCTION
-addRole = () => {
+// choicesofDepartments = () => {
+//     db.query(`SELECT name FROM department;`, (err, results) => {
+//                     err ? console.log(err) : results.forEach(obj => obj.name)
+//                 })
 
+// }
+
+addRole = () => {
+    inquirer
+        .prompt([
+            {
+                type: 'input', 
+                name: 'roleName',
+                message: 'What is the name of the new role?'
+            },
+            {
+                type: 'input', 
+                name: 'roleSalary',
+                message: 'What is the salary of the new role?'
+            },
+            {
+                type: 'checkbox', 
+                name: 'roleDepartment',
+                message: 'What department is the new role in?',
+                choices: []
+            },
+        ])
+        .then((data) => {
+            db.query(`INSERT INTO role (title, salary, id)
+ VALUE (?)`, )
+        })
+ 
 }
+
 // TODO: ADD AN EMPLOYEE FUNCTION
 addEmployee = () => {
 
@@ -73,3 +121,4 @@ init = () => {
 };
 
 init()
+
