@@ -9,7 +9,7 @@ options = () => {
             {
                 type: 'checkbox', 
                 name: 'options', 
-                choices: ['View All Departments', 'View All Roles', 'View All Employees', 'Add A Department', 'Add A Role', 'Add An Employee', 'Update An Employee Role']
+                choices: ['View All Departments', 'View All Roles', 'View All Employees', 'Add A Department', 'Add A Role', 'Add An Employee', 'Update An Employee Role', 'View the total utilized budget of a department']
             }
         ])
         .then((data) => {
@@ -25,6 +25,7 @@ nextQuesitonSet = (data) => {
     : (data === 'Add A Role') ? addRole()
     : (data === 'Add An Employee') ? addEmployee()
     : (data === 'Update An Employee Role') ? updateEmployee() 
+    : (data === 'View the total utilized budget of a department') ? budget()
     : options(); 
 }
 
@@ -71,7 +72,8 @@ addDepartment = () => {
         .then((data) => {
            db.query(`INSERT INTO department (name)
     VALUE (?)`, data.newDepartment, (err, results) => {
-        err ? console.log(err) : console.log(`Added ${data.newDepartment} to the database!`);
+        err ? console.log(err) : console.log(`Added ${data.newDepartment} to the database!`) 
+                                departmentArr.push(data.newDepartment);
         options()
     }) 
         })
@@ -111,6 +113,7 @@ addRole = () => {
             db.query(`INSERT INTO role (title, salary, department_id)
  VALUE (?, ?, ?)`, [data.roleName, data.roleSalary, id], (err, results) => {
     err ? console.log(err) : console.log(`Added ${data.roleName} to the database`)
+                            roleArr.push(data.roleName);
     options()
  })
         })
@@ -163,7 +166,7 @@ addEmployee = () => {
             {
                 type: 'checkbox', 
                 name: 'employeeManager',
-                message: "Who is the new employee's manager?",
+                message: "Who is the new employee's manager? (If no manager just press enter)",
                 choices: employeeArrTotal[0]
             },
         ])
@@ -171,9 +174,15 @@ addEmployee = () => {
         const roleindex = roleArr.indexOf(data.employeeRole[0]);
         const roleid = roleindex + 1;
         const managerindex = employeeArrTotal[0].indexOf(data.employeeManager[0]);
-        const managerid = managerindex +1;
+        const managerid = () => {
+            if(managerindex === -1) {
+                return null
+            } else {
+                return managerindex+1
+            }
+        }
         db.query(`INSERT INTO employee (first_name, last_name, role_id, manager_id)
-        VALUE(?, ?, ?, ?)`,[data.firstName, data.lastName, roleid, managerid], (err, result) => {
+        VALUE(?, ?, ?, ?)`,[data.firstName, data.lastName, roleid, managerid()], (err, result) => {
             err ? console.log(err) : console.log(`Added new employee to the database`)
             options()
         })
@@ -205,6 +214,28 @@ updateEmployee = () => {
         db.query(`UPDATE employee SET role_id  = ? WHERE id = ? `, [newroleid, employeeid], (err, result) => {
             err ? console.log(err) : console.log(`Updated employee in the database`)
             options()
+        })
+    })
+}
+
+// BUDGET FUCNTION
+budget = () => {
+    inquirer
+    .prompt([
+        {
+            type: 'checkbox', 
+            name: 'budget',
+            message: 'Which department would yo ulike to view?',
+            choices: departmentArr
+        },
+    ])
+    .then((data) => {
+        db.query(`SELECT name, SUM(salary) AS total_department_salary
+        FROM role
+        JOIN department ON department_id = department.id
+        WHERE name = ?`, data.budget[0], (err, results) => {
+            (err) ? console.log(err) : console.table(results)
+        options()
         })
     })
 }
