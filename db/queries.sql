@@ -1,18 +1,10 @@
 USE office_db;
 
 
--- Joins all tables
--- SELECT * 
--- FROM department
--- JOIN role
--- ON department_id = department.id
--- JOIN employee
--- ON role_id = role.id;
-
 -- all departments
 SELECT id, name AS department FROM department;
 
--- -- all roles
+-- all roles
 SELECT role.title,role.id, name AS department, role.salary 
 FROM department
 JOIN role
@@ -29,13 +21,16 @@ JOIN employee ON role_id = role.id;
 INSERT INTO department (name)
     VALUE (?)
 
--- add Role (will have to use add deparemtn as well then add the id that way)
+-- add Role 
 INSERT INTO role (title, salary, id)
     VALUE (?)
 
 -- add employee (will need to )
-INSERT INTO employee (first_name, last_name, role, manager)
+INSERT INTO employee (first_name, last_name, role_id, manager_id)
+VALUE(?, ?, ?, ?)
 
+-- update employee
+UPDATE employee SET role_id  = 10 WHERE id = 7;
 
 
 
