@@ -1,5 +1,5 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-# UTA-bootcamp-challenge12
+# Employee-Tracker
 ## Description 
 This application is an employee Tracker. It allows users to view and add departments, roles, and employees. It was created using node.js, inquirer, and mySQL. The user should be able to view a menu of opitions on the command line and view, edit, or update depending on the option they choose. 
 ## Table of Contents
